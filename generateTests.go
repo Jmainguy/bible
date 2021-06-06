@@ -11,7 +11,7 @@ import (
 
 func returnSingleInt(query string) (int, error) {
 	var result int
-	db, err := sql.Open("sqlite3", "database/bible-sqlite-jmainguy.db?cache=shared&mode=memory")
+	db, err := sql.Open("sqlite3", "database/bible.db?cache=shared&mode=memory")
 	if err != nil {
 		return result, err
 	}
