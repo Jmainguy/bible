@@ -25,11 +25,35 @@ Usage of ./bible:
 ```
 
 ## Example
+Single verse from the NASB
+
 ```/bin/bash
 [jmainguy@jmainguy bible]$ ./bible  --passage "Obadiah 1:21" -translation t_nasb
 Obadiah 1:21 - New American Standard Bible
   The deliverers will ascend Mount Zion To judge the mountain of Esau, And the kingdom will be the Lord’s.
 
+```
+
+Compare multiple verses, against multiple translations.
+```/bin/bash
+[jmainguy@jmainguy bible]$ ./bible  --passage "Philippians 3:13 - 3:14" --compare "t_kjv t_leb t_nasb"
+Philippians 3:13 - King James Version
+  Brethren, I count not myself to have apprehended: but this one thing I do, forgetting those things which are behind, and reaching forth unto those things which are before,
+
+Philippians 3:14 - King James Version
+  I press toward the mark for the prize of the high calling of God in Christ Jesus.
+
+Philippians 3:13 - Lexham English Bible
+  Brothers, I do not consider myself to have laid hold of it. But I do one thing, forgetting the things behind and straining toward the things ahead,
+
+Philippians 3:14 - Lexham English Bible
+  I press on toward the goal for the prize of the upward call of  God in Christ Jesus.
+
+Philippians 3:13 - New American Standard Bible
+  Brethren, I do not regard myself as having laid hold of it yet; but one thing I do: forgetting what lies behind and reaching forward to what lies ahead,
+
+Philippians 3:14 - New American Standard Bible
+  I press on toward the goal for the prize of the upward call of God in Christ Jesus.
 ```
 
 ## PreBuilt Binaries
