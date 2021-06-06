@@ -8,12 +8,28 @@ A command line bible written in go
 ## Usage
 ```/bin/bash
 Usage of ./bible:
+  -compare string
+    	Translations to compare passage against, set to 'all' for all translations in the database, or use a space seperated list
   -db string
     	Bible database to use (default "database/bible-sqlite-jmainguy.db")
-  -verse string
-    	Verse to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16' (default "John 3:16")
-  -version string
-    	Bible Version to use (default "t_kjv")
+  -generateTests
+    	Whether to generate and print tests to stdout
+  -listBooks
+    	List all books of the bible and their number of chapters
+  -listTranslations
+    	List all translations in database
+  -passage string
+    	Passage to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16' (default "John 3:16")
+  -translation string
+    	Bible translation to use (default "t_kjv")
+```
+
+## Example
+```/bin/bash
+[jmainguy@jmainguy bible]$ ./bible  --passage "Obadiah 1:21" -translation t_nasb
+Obadiah 1:21 - New American Standard Bible
+  The deliverers will ascend Mount Zion To judge the mountain of Esau, And the kingdom will be the Lord’s.
+
 ```
 
 ## PreBuilt Binaries
