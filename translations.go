@@ -15,7 +15,7 @@ func getTranslations(db *sql.DB) map[string]Translation {
 	translations := make(map[string]Translation)
 	query := `SELECT "table","version" FROM bible_version_key;`
 	rows, err := db.Query(query)
-	check(err)
+	dbCheck(err)
 	for rows.Next() {
 		translation := Translation{}
 		err = rows.Scan(&translation.Table, &translation.Version)

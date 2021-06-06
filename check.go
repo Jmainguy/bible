@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -29,4 +30,14 @@ func checkString(s string) bool {
 		}
 	}
 	return true
+}
+
+func dbCheck(e error) {
+	if e != nil {
+		if strings.Contains(e.Error(), "no such table:") {
+			fmt.Println(e)
+			fmt.Println("This usually means your database doesnt exist, or is corrupt")
+			os.Exit(1)
+		}
+	}
 }

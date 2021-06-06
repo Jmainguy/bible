@@ -28,7 +28,7 @@ func getVerseID(book int, chapterVerse string, db *sql.DB, desired string, versi
 		if desired == "max" {
 			query := fmt.Sprintf("select id from %s where b is %d and c is %d;", version, book, chapter)
 			rows, err := db.Query(query)
-			check(err)
+			dbCheck(err)
 
 			verse := Verse{}
 			for rows.Next() {

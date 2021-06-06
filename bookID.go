@@ -9,7 +9,7 @@ func mapIDToBook(db *sql.DB) map[int]string {
 	bookMap := make(map[int]string)
 	query := `SELECT b,n FROM key_english;`
 	rows, err := db.Query(query)
-	check(err)
+	dbCheck(err)
 	keyEnglish := KeyEnglish{}
 	for rows.Next() {
 		err = rows.Scan(&keyEnglish.ID, &keyEnglish.Book)
@@ -23,7 +23,7 @@ func listBooks(db *sql.DB) {
 	var books []BookInfo
 	query := `SELECT "order","title_short","otnt","chapters" FROM book_info;`
 	rows, err := db.Query(query)
-	check(err)
+	dbCheck(err)
 	for rows.Next() {
 		bookInfo := BookInfo{}
 		err = rows.Scan(&bookInfo.ID, &bookInfo.Title, &bookInfo.Testament, &bookInfo.Chapters)

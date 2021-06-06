@@ -17,7 +17,7 @@ func rowsQuery(query string, db *sql.DB) (*sql.Rows, error) {
 
 func runQuery(query string, db *sql.DB, translationName string) {
 	rows, err := db.Query(query)
-	check(err)
+	dbCheck(err)
 
 	verse := Verse{}
 	bookMap := mapIDToBook(db)

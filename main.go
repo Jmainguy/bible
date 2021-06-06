@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"os"
 	"strings"
 )
 
@@ -19,9 +20,20 @@ func main() {
 	listTranslationsPtr := flag.Bool("listTranslations", false, "List all translations in database")
 	flag.Parse()
 
+	// See if DB even exists, otherwise quit
+	_, err := os.Stat(*databasePtr)
+	if err != nil {
+		fmt.Printf("Database %s does not seem to exist\n", *databasePtr)
+		os.Exit(1)
+	}
+
 	// Open sqlite3 database containing the bibles
 	db, err := sql.Open("sqlite3", *databasePtr)
-	check(err)
+	if err != nil {
+		fmt.Println("Had trouble opening database")
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	if *generateTestsPtr {
 		generateTests(db)
