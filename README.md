@@ -59,6 +59,25 @@ Philippians 3:14 - New American Standard Bible
 ## PreBuilt Binaries
 Grab Binaries from [The Releases Page](https://github.com/Jmainguy/bible/releases)
 
+## Install
+
+### Homebrew
+
+The formula requires sudo, as it places the database in /opt/bible/bible.db
+```/bin/bash
+brew install jmainguy/tap/bible
+```
+
+### yum / dnf
+You can install the rpm frmo the [The Releases Page](https://github.com/Jmainguy/bible/releases)
+```/bin/bash
+# For example, to install 0.0.0-1
+dnf install https://github.com/Jmainguy/bible/releases/download/v0.0.0/bible-0.0.0-1.x86_64.rpm
+```
+
+### deb
+There is a debian package in [The Releases Page](https://github.com/Jmainguy/bible/releases), I have not used apt / apt-get lately, but I imagine it supports installing from a random url, follow the same idea as yum / dnf above
+
 ## Build
 ```/bin/bash
 export GO111MODULE=on
