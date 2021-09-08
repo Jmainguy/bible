@@ -5,7 +5,10 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"io"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -17,10 +20,63 @@ func getHomeDir() string {
 	return dirname
 }
 
+func downloadDB(file string) error {
+
+	// Ensure dir exists, if not create
+	dirpath := filepath.Dir(file)
+	dir, err := os.Stat(dirpath)
+	if err != nil {
+		err = os.MkdirAll(dirpath, os.ModePerm)
+		if err != nil {
+			fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
+			fmt.Printf("Specifically, %s the directory didnt exist, and we got this error when trying to create it\n", dirpath)
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	} else {
+		if !dir.IsDir() {
+			err = os.Remove(dirpath)
+			if err != nil {
+				fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
+				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			err = os.MkdirAll(dirpath, os.ModePerm)
+			if err != nil {
+				fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
+				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+	}
+
+	// Get the data
+	resp, err := http.Get("https://github.com/Jmainguy/bible/raw/main/database/bible.db")
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
+
+}
+
 func main() {
 
 	homeDir := getHomeDir()
 	defaultBibleDB := homeDir + "/.bible/bible.db"
+
 	passagePtr := flag.String("passage", "John 3:16", "Passage to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16'")
 	translationPtr := flag.String("translation", "t_kjv", "Bible translation to use")
 	databasePtr := flag.String("db", defaultBibleDB, "Bible database to use")
@@ -34,7 +90,11 @@ func main() {
 	_, err := os.Stat(*databasePtr)
 	if err != nil {
 		fmt.Printf("Database %s does not seem to exist\n", *databasePtr)
-		os.Exit(1)
+		fmt.Println("Will download it now")
+		err = downloadDB(*databasePtr)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// Open sqlite3 database containing the bibles

@@ -69,9 +69,6 @@ nfpms:
   formats:
   - deb
   - rpm
-  contents:
-    - src: database/bible.db
-      dst: /opt/bible/bible.db
 
 brews:
   - tap:
@@ -88,8 +85,6 @@ brews:
       system "#{bin}/bible"
     install: |
       bin.install "bible"
-      mkdir_p "~/.bible"
-      cp "database/bible.db", "~/.bible/bible.db"
 
 checksum:
   name_template: 'checksums.txt'
