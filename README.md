@@ -7,11 +7,11 @@ A command line bible written in go
 
 ## Usage
 ```/bin/bash
-Usage of ./bible:
+Usage of bible:
   -compare string
     	Translations to compare passage against, set to 'all' for all translations in the database, or use a space seperated list
   -db string
-    	Bible database to use (default "database/bible-sqlite-jmainguy.db")
+    	Bible database to use (defaults to ~/.bible/bible.db, will download this for you if it doesnt exist)
   -generateTests
     	Whether to generate and print tests to stdout
   -listBooks
@@ -28,15 +28,16 @@ Usage of ./bible:
 Single verse from the NASB
 
 ```/bin/bash
-[jmainguy@jmainguy bible]$ ./bible  --passage "Obadiah 1:21" -translation t_nasb
+[jmainguy@jmainguy bible]$ bible  --passage "Obadiah 1:21" -translation t_nasb
 Obadiah 1:21 - New American Standard Bible
   The deliverers will ascend Mount Zion To judge the mountain of Esau, And the kingdom will be the Lord’s.
 
 ```
 
 Compare multiple verses, against multiple translations.
+
 ```/bin/bash
-[jmainguy@jmainguy bible]$ ./bible  --passage "Philippians 3:13 - 3:14" --compare "t_kjv t_leb t_nasb"
+[jmainguy@jmainguy bible]$ bible  --passage "Philippians 3:13 - 3:14" --compare "t_kjv t_leb t_nasb"
 Philippians 3:13 - King James Version
   Brethren, I count not myself to have apprehended: but this one thing I do, forgetting those things which are behind, and reaching forth unto those things which are before,
 
@@ -63,20 +64,25 @@ Grab Binaries from [The Releases Page](https://github.com/Jmainguy/bible/release
 
 ### Homebrew
 
-The formula requires sudo, as it places the database in /opt/bible/bible.db
 ```/bin/bash
 brew install jmainguy/tap/bible
 ```
 
 ### yum / dnf
-You can install the rpm frmo the [The Releases Page](https://github.com/Jmainguy/bible/releases)
+You can install the rpm from the [The Releases Page](https://github.com/Jmainguy/bible/releases)
 ```/bin/bash
 # For example, to install 0.0.0-1
 dnf install https://github.com/Jmainguy/bible/releases/download/v0.0.0/bible-0.0.0-1.x86_64.rpm
 ```
 
 ### deb
-There is a debian package in [The Releases Page](https://github.com/Jmainguy/bible/releases), I have not used apt / apt-get lately, but I imagine it supports installing from a random url, follow the same idea as yum / dnf above
+There is a debian package in [The Releases Page](https://github.com/Jmainguy/bible/releases) 
+
+```
+# For example, to install 0.0.1
+wget https://github.com/Jmainguy/bible/releases/download/v0.0.1/bible_x86_64.deb
+dpkg -i bible_x86_64.deb
+```
 
 ## Build
 ```/bin/bash
