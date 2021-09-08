@@ -88,9 +88,8 @@ brews:
       system "#{bin}/bible"
     install: |
       bin.install "bible"
-      system "sudo chmod 777 /opt"
-      mkdir_p "/opt/bible"
-      cp "database/bible.db", "/opt/bible/bible.db"
+      mkdir_p "~/.bible"
+      cp "database/bible.db", "~/.bible/bible.db"
 
 checksum:
   name_template: 'checksums.txt'

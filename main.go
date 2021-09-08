@@ -9,11 +9,21 @@ import (
 	"strings"
 )
 
+func getHomeDir() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return dirname
+}
+
 func main() {
 
+	homeDir := getHomeDir()
+	defaultBibleDB := homeDir + "/.bible/bible.db"
 	passagePtr := flag.String("passage", "John 3:16", "Passage to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16'")
 	translationPtr := flag.String("translation", "t_kjv", "Bible translation to use")
-	databasePtr := flag.String("db", "/opt/bible/bible.db", "Bible database to use")
+	databasePtr := flag.String("db", defaultBibleDB, "Bible database to use")
 	comparePtr := flag.String("compare", "", "Translations to compare passage against, set to 'all' for all translations in the database, or use a space seperated list")
 	generateTestsPtr := flag.Bool("generateTests", false, "Whether to generate and print tests to stdout")
 	listBooksPtr := flag.Bool("listBooks", false, "List all books of the bible and their number of chapters")
