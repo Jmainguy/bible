@@ -21,14 +21,24 @@ builds:
       - darwin
 
   -
-    id: linux
+    id: linux-arm64
+    env:
+      - CGO_ENABLED=1
+      - CC=aarch64-linux-gnu-gcc
+    goarch:
+      - arm64
+    goos:
+      - linux
+
+  -
+    id: linux-amd64
     env:
       - CGO_ENABLED=1
     goarch:
       - amd64
-      - arm64
     goos:
       - linux
+
   -
     id: windows
     env:
