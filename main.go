@@ -4,73 +4,14 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
-	"io"
-	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
+	"time"
+
+	"math/rand"
+
+	_ "github.com/mattn/go-sqlite3"
 )
-
-func getHomeDir() string {
-	dirname, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println(err)
-	}
-	return dirname
-}
-
-func downloadDB(file string) error {
-
-	// Ensure dir exists, if not create
-	dirpath := filepath.Dir(file)
-	dir, err := os.Stat(dirpath)
-	if err != nil {
-		err = os.MkdirAll(dirpath, os.ModePerm)
-		if err != nil {
-			fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
-			fmt.Printf("Specifically, %s the directory didnt exist, and we got this error when trying to create it\n", dirpath)
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	} else {
-		if !dir.IsDir() {
-			err = os.Remove(dirpath)
-			if err != nil {
-				fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
-				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			err = os.MkdirAll(dirpath, os.ModePerm)
-			if err != nil {
-				fmt.Printf("So, %s didnt exist, we tried to download and create it, but ran into an error\n", file)
-				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
-	}
-
-	// Get the data
-	resp, err := http.Get("https://github.com/Jmainguy/bible/raw/main/database/bible.db")
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	// Create the file
-	out, err := os.Create(file)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	// Write the body to file
-	_, err = io.Copy(out, resp.Body)
-	return err
-
-}
 
 func main() {
 
@@ -84,6 +25,9 @@ func main() {
 	generateTestsPtr := flag.Bool("generateTests", false, "Whether to generate and print tests to stdout")
 	listBooksPtr := flag.Bool("listBooks", false, "List all books of the bible and their number of chapters")
 	listTranslationsPtr := flag.Bool("listTranslations", false, "List all translations in database")
+	randomPassagePtr := flag.Bool("randomPassage", false, "Print a random passage")
+	randomChapterPtr := flag.Bool("randomChapter", false, "Print a random Chapter")
+
 	flag.Parse()
 
 	// See if DB even exists, otherwise quit
@@ -103,6 +47,48 @@ func main() {
 		fmt.Println("Had trouble opening database")
 		fmt.Println(err)
 		os.Exit(1)
+	}
+	rand.Seed(time.Now().UnixNano())
+
+	if *randomChapterPtr {
+		books := getBooks(db)
+		book := books[rand.Intn(len(books))]
+		chapter := rand.Intn(book.Chapters)
+		if chapter == 0 {
+			chapter++
+		}
+		*passagePtr = fmt.Sprintf("%s %d", book.Title, chapter)
+	} else if *randomPassagePtr {
+		idQuery := "SELECT ID from t_kjv;"
+		allIDs, err := rowsQuery(idQuery, db)
+		if err != nil {
+			fmt.Println("Unable to return a random passage")
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		var randomIDs []int
+		var id int
+		for allIDs.Next() {
+			err := allIDs.Scan(&id)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			randomIDs = append(randomIDs, id)
+		}
+		randomID := randomIDs[rand.Intn(len(randomIDs))]
+		query := fmt.Sprintf("SELECT * FROM %s WHERE id is %d;", *translationPtr, randomID)
+		passage := rowQuery(query, db)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		verse := Verse{}
+		bookMap := mapIDToBook(db)
+		err = passage.Scan(&verse.ID, &verse.Book, &verse.Chapter, &verse.Verse, &verse.Text)
+		check(err)
+		*passagePtr = fmt.Sprintf("%s %d:%d", bookMap[verse.Book], verse.Chapter, verse.Verse)
 	}
 
 	if *generateTestsPtr {

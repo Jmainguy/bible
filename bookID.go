@@ -19,7 +19,7 @@ func mapIDToBook(db *sql.DB) map[int]string {
 	return bookMap
 }
 
-func listBooks(db *sql.DB) {
+func getBooks(db *sql.DB) []BookInfo {
 	var books []BookInfo
 	query := `SELECT "order","title_short","otnt","chapters" FROM book_info;`
 	rows, err := db.Query(query)
@@ -35,6 +35,11 @@ func listBooks(db *sql.DB) {
 		}
 		books = append(books, bookInfo)
 	}
+	return books
+}
+
+func listBooks(db *sql.DB) {
+	books := getBooks(db)
 	// {41 Mark New Testament 16}
 	for _, v := range books {
 		if v.Chapters > 1 {

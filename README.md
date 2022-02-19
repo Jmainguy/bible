@@ -7,7 +7,6 @@ A command line bible written in go
 
 ## Usage
 ```/bin/bash
-Usage of bible:
   -compare string
     	Translations to compare passage against, set to 'all' for all translations in the database, or use a space seperated list
   -db string
@@ -20,6 +19,10 @@ Usage of bible:
     	List all translations in database
   -passage string
     	Passage to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16' (default "John 3:16")
+  -randomChapter
+    	Print a random Chapter
+  -randomPassage
+    	Print a random passage
   -translation string
     	Bible translation to use (default "t_kjv")
 ```
