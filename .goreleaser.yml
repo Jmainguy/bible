@@ -19,6 +19,9 @@ builds:
     goarch:
       - arm64
       - amd64
+      - arm
+    goarm:
+      - 5
     goos:
       - linux
 
@@ -57,6 +60,8 @@ nfpms:
   overrides:
       rpm:
         file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{.Release}}.{{ .Arch }}"
+      deb:
+        file_name_template: "{{ .ProjectName }}_{{ .Version }}-{{.Release}}_{{ .Arch }}"
   formats:
   - deb
   - rpm
