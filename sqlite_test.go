@@ -12,13 +12,13 @@ import (
 var bookMap map[int]string
 
 func init() {
-	db, err := sql.Open("sqlite3", "database/bible.db?cache=shared&mode=memory")
+	db, err := sql.Open("sqlite", "database/bible.db?cache=shared&mode=memory")
 	check(err)
 	bookMap = mapIDToBook(db)
 }
 
 func prepareSqliteDB(t *testing.T) (db *sql.DB) {
-	db, err := sql.Open("sqlite3", "database/bible.db?cache=shared&mode=memory")
+	db, err := sql.Open("sqlite", "database/bible.db?cache=shared&mode=memory")
 	assert.Nil(t, err)
 	return db
 }

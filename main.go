@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// Open sqlite3 database containing the bibles
-	db, err := sql.Open("sqlite3", *databasePtr)
+	db, err := sql.Open("sqlite", *databasePtr)
 	if err != nil {
 		fmt.Println("Had trouble opening database")
 		fmt.Println(err)
