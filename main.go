@@ -10,7 +10,7 @@ import (
 
 	"math/rand"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 func main() {

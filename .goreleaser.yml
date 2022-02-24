@@ -8,12 +8,6 @@ before:
 builds:
   -
     id: darwin
-    ldflags:
-      - -s
-    env:
-      - CGO_ENABLED=1
-      - CC=/home/runner/work/osxcross/target/bin/o64-clang
-      - CXX=/home/runner/work/osxcross/target/bin/o64-clang++
     goarch:
       - amd64
       - arm64
@@ -21,30 +15,15 @@ builds:
       - darwin
 
   -
-    id: linux-arm64
-    env:
-      - CGO_ENABLED=1
-      - CC=aarch64-linux-gnu-gcc
+    id: linux
     goarch:
       - arm64
-    goos:
-      - linux
-
-  -
-    id: linux-amd64
-    env:
-      - CGO_ENABLED=1
-    goarch:
       - amd64
     goos:
       - linux
 
   -
     id: windows
-    env:
-      - CGO_ENABLED=1
-      - CC=x86_64-w64-mingw32-gcc
-      - CXX=x86_64-w64-mingw32-g++
     goarch:
       - amd64
     goos:

@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strings"
+
 	"github.com/divan/num2words"
 	"github.com/iancoleman/strcase"
-	_ "github.com/mattn/go-sqlite3"
-	"strings"
+	_ "modernc.org/sqlite"
 )
 
 func returnSingleInt(query string) (int, error) {
