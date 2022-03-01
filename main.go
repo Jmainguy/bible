@@ -15,7 +15,8 @@ import (
 
 func main() {
 
-	homeDir := getHomeDir()
+	homeDir, err := os.UserHomeDir()
+	check(err)
 	defaultBibleDB := homeDir + "/.bible/bible.db"
 
 	passagePtr := flag.String("passage", "John 3:16", "Passage to return. Can be given in following syntax. 'John', '1 John 3', 'John 3:16', or for a range in the same book '1 John 1:1 - 3:16'")
@@ -31,7 +32,7 @@ func main() {
 	flag.Parse()
 
 	// See if DB even exists, otherwise quit
-	_, err := os.Stat(*databasePtr)
+	_, err = os.Stat(*databasePtr)
 	if err != nil {
 		fmt.Printf("Database %s does not seem to exist\n", *databasePtr)
 		fmt.Println("Will download it now")
@@ -102,7 +103,8 @@ func main() {
 		translationsAvailable := getTranslations(db)
 		if *comparePtr == "all" {
 			for _, v := range translationsAvailable {
-				query := parseVerseString(*passagePtr, v.Table, db)
+				query, err := parseVerseString(*passagePtr, v.Table, db)
+				check(err)
 				runQuery(query, db, v.Version)
 			}
 		} else {
@@ -110,7 +112,8 @@ func main() {
 			for _, v := range translationsWantedList {
 				translation, okay := translationsAvailable[v]
 				if okay {
-					query := parseVerseString(*passagePtr, v, db)
+					query, err := parseVerseString(*passagePtr, v, db)
+					check(err)
 					runQuery(query, db, translation.Version)
 				} else {
 					fmt.Printf("%s is not a translation in the %s database\n", v, *databasePtr)
@@ -118,7 +121,8 @@ func main() {
 			}
 		}
 	} else {
-		query := parseVerseString(*passagePtr, *translationPtr, db)
+		query, err := parseVerseString(*passagePtr, *translationPtr, db)
+		check(err)
 		translationsAvailable := getTranslations(db)
 		translation, okay := translationsAvailable[*translationPtr]
 		if okay {

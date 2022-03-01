@@ -3,12 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
 
-func getVerseID(book int, chapterVerse string, db *sql.DB, desired string, version string) (verseID int) {
+func getVerseID(book int, chapterVerse string, db *sql.DB, minmax string, version string) (verseID int, err error) {
 	chapterVerseArray := strings.Split(chapterVerse, ":")
 	chapter, _ := strconv.Atoi(chapterVerseArray[0])
 	var verse int
@@ -19,40 +18,60 @@ func getVerseID(book int, chapterVerse string, db *sql.DB, desired string, versi
 		verseIDString = fmt.Sprintf("%02d%03d%03d", book, chapter, verse)
 		verseIDInside, err := strconv.Atoi(verseIDString)
 		if err != nil {
-			panic(err)
+			return 0, err
 		}
 		verseID = verseIDInside
 		//  Just a chaper, 3
 	} else if len(chapterVerseArray) == 1 {
 		// Return max verse for this chapter
-		if desired == "max" {
+		if minmax == "max" {
 			query := fmt.Sprintf("select id from %s where b is %d and c is %d;", version, book, chapter)
 			rows, err := db.Query(query)
-			dbCheck(err)
+			if err != nil {
+				return 0, err
+			}
 
 			verse := Verse{}
 			for rows.Next() {
 				err = rows.Scan(&verse.ID)
-				check(err)
+				if err != nil {
+					return 0, err
+				}
 				verseID = verse.ID
 			}
-		} else {
+		} else if minmax == "min" {
 			verseIDString = fmt.Sprintf("%02d%03d001", book, chapter)
 			verseIDInside, err := strconv.Atoi(verseIDString)
 			if err != nil {
-				panic(err)
+				return 0, err
 			}
 			verseID = verseIDInside
+		} else {
+			err := fmt.Errorf("minmax must be set to min or max, was set to %s", minmax)
+			return 0, err
 		}
 	}
 
-	return
+	return verseID, nil
 }
 
-func parseVerseString(verseString, version string, db *sql.DB) (query string) {
+func parseVerseString(verseString, translation string, db *sql.DB) (query string, err error) {
 	// Book
-	bookID, bookName := getBook(verseString, db)
-
+	bookID, bookName, err := getBook(verseString, db)
+	if err != nil {
+		return "", err
+	}
+	validTranslations := getTranslations(db)
+	isValidTranslation := false
+	for _, validTranslation := range validTranslations {
+		if translation == validTranslation.Table {
+			isValidTranslation = true
+		}
+	}
+	if !isValidTranslation {
+		err := fmt.Errorf("%s is not a valid translation available in database", translation)
+		return "", err
+	}
 	// Must be a valid book to get this far.
 	// Cut book name from requested query
 	verseString = strings.TrimPrefix(verseString, bookName)
@@ -64,8 +83,8 @@ func parseVerseString(verseString, version string, db *sql.DB) (query string) {
 			// Bomb out if any non numeric or colons or dash
 			validString := checkString(v)
 			if !validString {
-				fmt.Printf("Verse contains invalid characters, %s\n", v)
-				os.Exit(1)
+				err := fmt.Errorf("Verse contains invalid characters, %s", v)
+				return "", err
 			}
 			verseArray = append(verseArray, v)
 		}
@@ -75,13 +94,19 @@ func parseVerseString(verseString, version string, db *sql.DB) (query string) {
 	case len(verseArray) == 3:
 		// second indice should be a - always
 		if verseArray[1] != "-" {
-			fmt.Printf("Range is invalid, must have a - in the middle of the two verses, %s\n", verseString)
-			os.Exit(1)
+			err := fmt.Errorf("range is invalid, must have a - in the middle of the two verses, %s", verseString)
+			return "", err
 		}
 		// Get chapter and verse strings
-		beginID := getVerseID(bookID, verseArray[0], db, "min", version)
-		endID := getVerseID(bookID, verseArray[2], db, "max", version)
-		query = fmt.Sprintf("SELECT * FROM %s WHERE id BETWEEN %d AND %d;", version, beginID, endID)
+		beginID, err := getVerseID(bookID, verseArray[0], db, "min", translation)
+		if err != nil {
+			return "", err
+		}
+		endID, err := getVerseID(bookID, verseArray[2], db, "max", translation)
+		if err != nil {
+			return "", err
+		}
+		query = fmt.Sprintf("SELECT * FROM %s WHERE id BETWEEN %d AND %d;", translation, beginID, endID)
 
 	// 3:16
 	// 3
@@ -90,23 +115,27 @@ func parseVerseString(verseString, version string, db *sql.DB) (query string) {
 		if len(strings.Split(verseArray[0], ":")) == 1 {
 			validChapter := checkNumeric(verseArray[0])
 			if validChapter {
-				query = fmt.Sprintf("SELECT * FROM %s WHERE b is %d and c is %s;", version, bookID, verseArray[0])
+				query = fmt.Sprintf("SELECT * FROM %s WHERE b is %d and c is %s;", translation, bookID, verseArray[0])
 			}
 		} else {
-			verseID := getVerseID(bookID, verseArray[0], db, "max", version)
-			query = fmt.Sprintf("SELECT * FROM %s WHERE id is %d;", version, verseID)
+			verseID, err := getVerseID(bookID, verseArray[0], db, "max", translation)
+			if err != nil {
+				return "", err
+			}
+			query = fmt.Sprintf("SELECT * FROM %s WHERE id is %d;", translation, verseID)
 		}
 	// John
 	case len(verseArray) == 0:
-		query = fmt.Sprintf("SELECT * FROM %s WHERE b is %d;", version, bookID)
+		query = fmt.Sprintf("SELECT * FROM %s WHERE b is %d;", translation, bookID)
 	default:
-		query = fmt.Sprintf("Length was %d, array is %v\n", len(verseArray), verseArray)
+		err = fmt.Errorf("length was %d, array is %v", len(verseArray), verseArray)
+		return "", err
 	}
 
-	return
+	return query, nil
 }
 
-func getBook(verseString string, db *sql.DB) (bookID int, bookString string) {
+func getBook(verseString string, db *sql.DB) (bookID int, bookString string, err error) {
 	bookMap := mapIDToBook(db)
 
 	for key, bookName := range bookMap {
@@ -116,14 +145,8 @@ func getBook(verseString string, db *sql.DB) (bookID int, bookString string) {
 		}
 	}
 	if bookID == 0 {
-		fmt.Println(verseString)
-		fmt.Printf("Unable to find book in the bible\n")
-		fmt.Println("Valid Books")
-		for _, bookName := range bookMap {
-			fmt.Println(bookName)
-		}
-		os.Exit(1)
+		err = fmt.Errorf("unable to find book in the bible, run 'bible -listBooks' for a valid list")
 	}
 
-	return bookID, bookString
+	return bookID, bookString, err
 }

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func downloadDB(file string) error {
+func downloadDB(file string) (retErr error) {
 
 	// Ensure dir exists, if not create
 	dirpath := filepath.Dir(file)
@@ -16,26 +16,20 @@ func downloadDB(file string) error {
 	if err != nil {
 		err = os.MkdirAll(dirpath, os.ModePerm)
 		if err != nil {
-			fmt.Printf("So, %s did not exist, we tried to download and create it, but ran into an error\n", file)
-			fmt.Printf("Specifically, %s the directory did not exist, and we got this error when trying to create it\n", dirpath)
-			fmt.Println(err)
-			os.Exit(1)
+			retErr = fmt.Errorf("tried to create dir %s, got error %s", dirpath, err)
+			return retErr
 		}
 	} else {
 		if !dir.IsDir() {
 			err = os.Remove(dirpath)
 			if err != nil {
-				fmt.Printf("So, %s did not exist, we tried to download and create it, but ran into an error\n", file)
-				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
-				fmt.Println(err)
-				os.Exit(1)
+				retErr = fmt.Errorf("tried to delete %s, got error %s", dirpath, err)
+				return retErr
 			}
 			err = os.MkdirAll(dirpath, os.ModePerm)
 			if err != nil {
-				fmt.Printf("So, %s did not exist, we tried to download and create it, but ran into an error\n", file)
-				fmt.Printf("Specifically, %s existed but was not a directory, so we tried to delete it, then recreate it as a dir but ran into this error\n", dirpath)
-				fmt.Println(err)
-				os.Exit(1)
+				retErr = fmt.Errorf("tried to create dir %s, got error %s", dirpath, err)
+				return retErr
 			}
 		}
 	}
