@@ -2,12 +2,17 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 	"testing"
 )
 
 func Test_getVerseID(t *testing.T) {
 	db, err := sql.Open("sqlite", "database/bible.db")
-	check(err)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	type args struct {
 		book         int
 		chapterVerse string
@@ -76,7 +81,7 @@ func Test_getVerseID(t *testing.T) {
 				chapterVerse: "3",
 				db:           db,
 				minmax:       "max",
-				version:      "t_asdasd",
+				version:      "t_bad",
 			},
 			wantVerseID: 0,
 			wantErr:     true,
@@ -97,13 +102,25 @@ func Test_getVerseID(t *testing.T) {
 }
 
 func Test_parseVerseString(t *testing.T) {
-	db, err := sql.Open("sqlite", "database/bible.db")
-	check(err)
+	os.Remove("/tmp/bible.db")
+
+	db, _ := sql.Open("sqlite", "database/bible.db")
+	baddb, _ := sql.Open("sqlite", "/tmp/bible.db")
+
+	translationsAvailable, err := getTranslations(db)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	type args struct {
-		verseString string
+		config      Config
 		translation string
-		db          *sql.DB
 	}
 	tests := []struct {
 		name      string
@@ -114,9 +131,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "Bad Book",
 			args: args{
-				verseString: "Jon",
+				config: Config{
+					Passage:               "Jon",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "",
 			wantErr:   true,
@@ -124,9 +144,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "Bad Characters",
 			args: args{
-				verseString: "John asd-aa",
+				config: Config{
+					Passage:               "John asd-aa",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "",
 			wantErr:   true,
@@ -134,9 +157,11 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "Book and Chapter - blank translation",
 			args: args{
-				verseString: "John 3",
-				translation: "",
-				db:          db,
+				config: Config{
+					Passage:               "John 3",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 			},
 			wantQuery: "",
 			wantErr:   true,
@@ -144,9 +169,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "Book and Chapter - kjv",
 			args: args{
-				verseString: "John 3",
+				config: Config{
+					Passage:               "John 3",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "SELECT * FROM t_kjv WHERE b is 43 and c is 3;",
 			wantErr:   false,
@@ -154,9 +182,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "Book, Chapter, and verse - kjv",
 			args: args{
-				verseString: "John 3:16",
+				config: Config{
+					Passage:               "John 3:16",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "SELECT * FROM t_kjv WHERE id is 43003016;",
 			wantErr:   false,
@@ -164,9 +195,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "multiple verses",
 			args: args{
-				verseString: "John 3:16 - 4",
+				config: Config{
+					Passage:               "John 3:16 - 4",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "SELECT * FROM t_kjv WHERE id BETWEEN 43003016 AND 43004054;",
 			wantErr:   false,
@@ -174,9 +208,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "multiple verses no hyphen",
 			args: args{
-				verseString: "John 3:16  4",
+				config: Config{
+					Passage:               "John 3:16  4",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "",
 			wantErr:   true,
@@ -184,9 +221,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "multiple verses no hyphen extra chars",
 			args: args{
-				verseString: "John 3:16 5 4",
+				config: Config{
+					Passage:               "John 3:16 5 4",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "",
 			wantErr:   true,
@@ -194,9 +234,12 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "multiple verses no hyphen extra chars bad verses",
 			args: args{
-				verseString: "John 3:16 - 3:980",
+				config: Config{
+					Passage:               "John 3:16 - 3:980",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "SELECT * FROM t_kjv WHERE id BETWEEN 43003016 AND 43003980;",
 			wantErr:   false,
@@ -204,17 +247,46 @@ func Test_parseVerseString(t *testing.T) {
 		{
 			name: "book only",
 			args: args{
-				verseString: "John",
+				config: Config{
+					Passage:               "John",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
 				translation: "t_kjv",
-				db:          db,
 			},
 			wantQuery: "SELECT * FROM t_kjv WHERE b is 43;",
 			wantErr:   false,
 		},
+		{
+			name: "Bad chars in verse",
+			args: args{
+				config: Config{
+					Passage:               "John 3:16..",
+					DB:                    db,
+					TranslationsAvailable: translationsAvailable,
+				},
+				translation: "t_kjv",
+			},
+			wantQuery: "",
+			wantErr:   true,
+		},
+		{
+			name: "Bad database",
+			args: args{
+				config: Config{
+					Passage:               "John 3:16..",
+					DB:                    baddb,
+					TranslationsAvailable: translationsAvailable,
+				},
+				translation: "t_kjv",
+			},
+			wantQuery: "",
+			wantErr:   true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotQuery, err := parseVerseString(tt.args.verseString, tt.args.translation, tt.args.db)
+			gotQuery, err := parseVerseString(tt.args.config, tt.args.translation)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("parseVerseString() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -224,4 +296,6 @@ func Test_parseVerseString(t *testing.T) {
 			}
 		})
 	}
+	os.Remove("/tmp/bible.db")
+
 }

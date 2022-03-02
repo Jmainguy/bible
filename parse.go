@@ -55,33 +55,29 @@ func getVerseID(book int, chapterVerse string, db *sql.DB, minmax string, versio
 	return verseID, nil
 }
 
-func parseVerseString(verseString, translation string, db *sql.DB) (query string, err error) {
-	// Book
-	bookID, bookName, err := getBook(verseString, db)
-	if err != nil {
+func parseVerseString(config Config, translation string) (query string, err error) {
+	// Check for valid translation
+	_, okay := config.TranslationsAvailable[translation]
+	if !okay {
+		err = fmt.Errorf("Translation is invalid")
 		return "", err
+
 	}
-	validTranslations := getTranslations(db)
-	isValidTranslation := false
-	for _, validTranslation := range validTranslations {
-		if translation == validTranslation.Table {
-			isValidTranslation = true
-		}
-	}
-	if !isValidTranslation {
-		err := fmt.Errorf("%s is not a valid translation available in database", translation)
+	// Book
+	bookID, bookName, err := getBook(config)
+	if err != nil {
 		return "", err
 	}
 	// Must be a valid book to get this far.
 	// Cut book name from requested query
-	verseString = strings.TrimPrefix(verseString, bookName)
-	verseArrayWithSpaces := strings.Split(verseString, " ")
+	config.Passage = strings.TrimPrefix(config.Passage, bookName)
+	verseArrayWithSpaces := strings.Split(config.Passage, " ")
 	// Remove all blank spaces from array
 	var verseArray []string
 	for _, v := range verseArrayWithSpaces {
 		if v != "" {
 			// Bomb out if any non numeric or colons or dash
-			validString := checkString(v)
+			validString := checkNumericPlusColonDash(v)
 			if !validString {
 				err := fmt.Errorf("Verse contains invalid characters, %s", v)
 				return "", err
@@ -94,15 +90,15 @@ func parseVerseString(verseString, translation string, db *sql.DB) (query string
 	case len(verseArray) == 3:
 		// second indice should be a - always
 		if verseArray[1] != "-" {
-			err := fmt.Errorf("range is invalid, must have a - in the middle of the two verses, %s", verseString)
+			err := fmt.Errorf("range is invalid, must have a - in the middle of the two verses, %s", config.Passage)
 			return "", err
 		}
 		// Get chapter and verse strings
-		beginID, err := getVerseID(bookID, verseArray[0], db, "min", translation)
+		beginID, err := getVerseID(bookID, verseArray[0], config.DB, "min", translation)
 		if err != nil {
 			return "", err
 		}
-		endID, err := getVerseID(bookID, verseArray[2], db, "max", translation)
+		endID, err := getVerseID(bookID, verseArray[2], config.DB, "max", translation)
 		if err != nil {
 			return "", err
 		}
@@ -118,7 +114,7 @@ func parseVerseString(verseString, translation string, db *sql.DB) (query string
 				query = fmt.Sprintf("SELECT * FROM %s WHERE b is %d and c is %s;", translation, bookID, verseArray[0])
 			}
 		} else {
-			verseID, err := getVerseID(bookID, verseArray[0], db, "max", translation)
+			verseID, err := getVerseID(bookID, verseArray[0], config.DB, "max", translation)
 			if err != nil {
 				return "", err
 			}
@@ -135,11 +131,14 @@ func parseVerseString(verseString, translation string, db *sql.DB) (query string
 	return query, nil
 }
 
-func getBook(verseString string, db *sql.DB) (bookID int, bookString string, err error) {
-	bookMap := mapIDToBook(db)
+func getBook(config Config) (bookID int, bookString string, err error) {
+	bookMap, err := mapIDToBook(config.DB)
+	if err != nil {
+		return bookID, bookString, err
+	}
 
 	for key, bookName := range bookMap {
-		if strings.HasPrefix(strings.ToLower(verseString), strings.ToLower(bookName)) {
+		if strings.HasPrefix(strings.ToLower(config.Passage), strings.ToLower(bookName)) {
 			bookID = key
 			bookString = bookName
 		}

@@ -35,6 +35,20 @@ func Test_downloadDB(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Path is not directory, cannot remove",
+			args: args{
+				file: "/proc/mdstat/bible.db",
+			},
+			wantErr: true,
+		},
+		{
+			name: "Path is not directory, can remove",
+			args: args{
+				file: "/tmp/bible.db/bible.db",
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -44,5 +58,6 @@ func Test_downloadDB(t *testing.T) {
 		})
 	}
 	// Clean up
+	os.Remove("/tmp/bible.db/bible.db")
 	os.Remove("/tmp/bible.db")
 }

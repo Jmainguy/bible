@@ -6,12 +6,6 @@ import (
 	"strings"
 )
 
-func check(e error) {
-	if e != nil {
-		fmt.Println(e)
-	}
-}
-
 func checkNumeric(s string) bool {
 	alphabet := "0123456789"
 	for _, character := range s {
@@ -22,7 +16,7 @@ func checkNumeric(s string) bool {
 	return true
 }
 
-func checkString(s string) bool {
+func checkNumericPlusColonDash(s string) bool {
 	alphabet := "0123456789:-"
 	for _, character := range s {
 		if !strings.Contains(alphabet, string(character)) {
@@ -32,12 +26,9 @@ func checkString(s string) bool {
 	return true
 }
 
-func dbCheck(e error) {
-	if e != nil {
-		if strings.Contains(e.Error(), "no such table:") {
-			fmt.Println(e)
-			fmt.Println("This usually means your database doesnt exist, or is corrupt")
-			os.Exit(1)
-		}
+func checkErrorPrintExitOne(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
