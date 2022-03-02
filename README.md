@@ -11,8 +11,6 @@ A command line bible written in go
     	Translations to compare passage against, set to 'all' for all translations in the database, or use a space seperated list
   -db string
     	Bible database to use (defaults to ~/.bible/bible.db, will download this for you if it doesnt exist)
-  -generateTests
-    	Whether to generate and print tests to stdout
   -listBooks
     	List all books of the bible and their number of chapters
   -listTranslations
