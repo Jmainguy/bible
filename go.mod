@@ -3,6 +3,6 @@ module github.com/jmainguy/bible
 go 1.15
 
 require (
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.2
 	modernc.org/sqlite v1.21.1
 )
