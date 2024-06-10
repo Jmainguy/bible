@@ -6,7 +6,7 @@ toolchain go1.22.4
 
 require (
 	github.com/stretchr/testify v1.9.0
-	modernc.org/sqlite v1.30.0
+	modernc.org/sqlite v1.30.1
 )
 
 require (
@@ -56,7 +56,7 @@ require (
 	modernc.org/cc/v3 v3.41.0 // indirect
 	modernc.org/cc/v4 v4.21.2 // indirect
 	modernc.org/ccgo/v3 v3.17.0 // indirect
-	modernc.org/ccgo/v4 v4.17.8 // indirect
+	modernc.org/ccgo/v4 v4.17.10 // indirect
 	modernc.org/ccorpus v1.11.6 // indirect
 	modernc.org/ccorpus2 v1.5.1 // indirect
 	modernc.org/fileutil v1.3.0 // indirect
@@ -65,7 +65,7 @@ require (
 	modernc.org/httpfs v1.0.6 // indirect
 	modernc.org/lex v1.1.1 // indirect
 	modernc.org/lexer v1.0.4 // indirect
-	modernc.org/libc v1.50.9 // indirect
+	modernc.org/libc v1.52.1 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/opt v0.1.3 // indirect
