@@ -6,7 +6,7 @@ toolchain go1.22.4
 
 require (
 	github.com/stretchr/testify v1.9.0
-	modernc.org/sqlite v1.30.0
+	modernc.org/sqlite v1.33.1
 )
 
 require (
@@ -44,7 +44,7 @@ require (
 	golang.org/x/mod v0.16.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/telemetry v0.0.0-20240228155512-f48c80bd79b2 // indirect
 	golang.org/x/term v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
@@ -54,9 +54,9 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.41.0 // indirect
-	modernc.org/cc/v4 v4.21.2 // indirect
+	modernc.org/cc/v4 v4.21.4 // indirect
 	modernc.org/ccgo/v3 v3.17.0 // indirect
-	modernc.org/ccgo/v4 v4.17.8 // indirect
+	modernc.org/ccgo/v4 v4.19.2 // indirect
 	modernc.org/ccorpus v1.11.6 // indirect
 	modernc.org/ccorpus2 v1.5.1 // indirect
 	modernc.org/fileutil v1.3.0 // indirect
@@ -65,7 +65,7 @@ require (
 	modernc.org/httpfs v1.0.6 // indirect
 	modernc.org/lex v1.1.1 // indirect
 	modernc.org/lexer v1.0.4 // indirect
-	modernc.org/libc v1.50.9 // indirect
+	modernc.org/libc v1.55.3 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/opt v0.1.3 // indirect
