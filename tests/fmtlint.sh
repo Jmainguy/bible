@@ -5,8 +5,15 @@ if [ $FormatCheck -gt 0 ]; then
     echo "gofmt -w *.go your code please."
     exit 1
 fi
-## Run golint
-golint -set_exit_status
+
+## Run staticcheck
+staticcheck ./...
+if [ $? -gt 0 ]; then
+    exit 1
+fi
+
+## Run go vet
+go vet ./...
 if [ $? -gt 0 ]; then
     exit 1
 fi

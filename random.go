@@ -24,9 +24,7 @@ func randomPassage(config Config) (Config, error) {
 	randomID := randomIDs[rand.Intn(len(randomIDs))]
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id is %d;", config.Translation, randomID)
 	passage := rowQuery(query, config.DB)
-	if err != nil {
-		return config, err
-	}
+
 	err = passage.Scan(&config.Verse.ID, &config.Verse.Book, &config.Verse.Chapter, &config.Verse.Verse, &config.Verse.Text)
 	if err != nil {
 		return config, err

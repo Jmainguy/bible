@@ -4,9 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
-	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -70,8 +68,6 @@ func setup() (config Config, err error) {
 	if err != nil {
 		return config, err
 	}
-
-	rand.Seed(time.Now().UnixNano())
 
 	config.Passage = *passagePtr
 	config.Translation = *translationPtr
