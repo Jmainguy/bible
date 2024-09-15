@@ -18,6 +18,9 @@ jobs:
     name: Test with Coverage
     runs-on: ubuntu-latest
     steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+        
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -30,9 +33,6 @@ jobs:
       - name: Add $GOPATH/bin to $PATH
         run: |
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-
-      - name: git checkout
-        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
