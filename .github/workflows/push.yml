@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: git checkout
         uses: actions/checkout@v4
-        
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Get Build Tools
         run: |
-          GO111MODULE=on go get github.com/ory/go-acc
+          go install github.com/ory/go-acc@latest
 
       - name: Add $GOPATH/bin to $PATH
         run: |
@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          go mod download
+          go mod tidy
 
       - name: Run Unit tests
         run: |
