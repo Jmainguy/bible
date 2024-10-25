@@ -1,3 +1,4 @@
+version: 2
 project_name: bible
 env:
   - GO111MODULE=on
@@ -34,11 +35,6 @@ builds:
 
 archives:
 - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    amd64: x86_64
   format_overrides:
   - goos: windows
     format: zip
@@ -55,8 +51,6 @@ nfpms:
   license: GPLv2
   vendor: Jmainguy
   release: 1
-  replacements:
-    amd64: x86_64
   overrides:
       rpm:
         file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{.Release}}.{{ .Arch }}"
@@ -65,22 +59,6 @@ nfpms:
   formats:
   - deb
   - rpm
-
-brews:
-  - tap:
-      owner: jmainguy
-      name: homebrew-tap
-    folder: Formula
-    homepage: https://github.com/Jmainguy/bible
-    description: "A command line bible"
-    license: "GPL-2.0"
-    commit_author:
-      name: Jonathan Mainguy
-      email: jon@soh.re
-    test: |
-      system "#{bin}/bible"
-    install: |
-      bin.install "bible"
 
 checksum:
   name_template: 'checksums.txt'
