@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/Jmainguy/bible/compare/v0.3.3...v0.3.4) (2024-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update module modernc.org/sqlite to v1.34.3 ([211cb19](https://github.com/Jmainguy/bible/commit/211cb1954d53deb92f4012f6029c39f61f829f76))
+
 ## [0.3.3](https://github.com/Jmainguy/bible/compare/v0.3.2...v0.3.3) (2024-12-10)
 
 
