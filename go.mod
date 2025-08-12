@@ -2,7 +2,7 @@ module github.com/jmainguy/bible
 
 go 1.23
 
-toolchain go1.23.4
+toolchain go1.25.0
 
 require (
 	github.com/stretchr/testify v1.10.0
