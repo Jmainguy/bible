@@ -103,7 +103,7 @@ func Test_getVerseID(t *testing.T) {
 
 func Test_parseVerseString(t *testing.T) {
 	if err := os.Remove("/tmp/bible.db"); err != nil {
-		t.Fatalf("failed to remove /tmp/bible.db: %v", err)
+		t.Logf("failed to remove /tmp/bible.db: %v", err)
 	}
 
 	db, _ := sql.Open("sqlite", "database/bible.db")
