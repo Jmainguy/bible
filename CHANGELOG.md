@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.0](https://github.com/Jmainguy/bible/compare/v0.3.3...v1.0.0) (2025-08-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* release 1.0, update deps
+
+### Features
+
+* release 1.0, update deps ([8519fbe](https://github.com/Jmainguy/bible/commit/8519fbe4a703fffe7d968d2912f15d8f14f50aed))
+
+
+### Bug Fixes
+
+* check for errors ([96b60dd](https://github.com/Jmainguy/bible/commit/96b60dd218ed5a6c45aa71227fa5290ea9409662))
+* **deps:** update module github.com/stretchr/testify to v1.11.1 ([91ad5ad](https://github.com/Jmainguy/bible/commit/91ad5adf4cf26db9ced629ec9b9269c0bf7ed35d))
+* **deps:** update module github.com/stretchr/testify to v1.11.1 ([92b8830](https://github.com/Jmainguy/bible/commit/92b8830dd41a3cec9c405cc85dccfea5a747ed2d))
+* **deps:** update module modernc.org/sqlite to v1.34.3 ([21a52a7](https://github.com/Jmainguy/bible/commit/21a52a74761639b81b4f4a1081ed0eff262359dd))
+* **deps:** update module modernc.org/sqlite to v1.34.3 ([211cb19](https://github.com/Jmainguy/bible/commit/211cb1954d53deb92f4012f6029c39f61f829f76))
+* **deps:** update module modernc.org/sqlite to v1.34.4 ([1ccd522](https://github.com/Jmainguy/bible/commit/1ccd522c9795628b6d5dcd832f905e9ce8a8d4b1))
+* **deps:** update module modernc.org/sqlite to v1.34.4 ([8b73444](https://github.com/Jmainguy/bible/commit/8b734449bb50d97cc4ba4ce0c9cc182b132477a7))
+
 ## [0.3.3](https://github.com/Jmainguy/bible/compare/v0.3.2...v0.3.3) (2024-12-10)
 
 
