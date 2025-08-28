@@ -7,7 +7,9 @@ import (
 )
 
 func Test_printPassage(t *testing.T) {
-	os.Remove("/tmp/bible.db")
+	if err := os.Remove("/tmp/bible.db"); err != nil {
+		t.Fatalf("failed to remove /tmp/bible.db: %v", err)
+	}
 
 	baddb, _ := sql.Open("sqlite", "/tmp/bible.db")
 	gooddb, _ := sql.Open("sqlite", "database/bible.db")
@@ -59,6 +61,8 @@ func Test_printPassage(t *testing.T) {
 			}
 		})
 	}
-	os.Remove("/tmp/bible.db")
+	if err := os.Remove("/tmp/bible.db"); err != nil {
+		t.Fatalf("failed to remove /tmp/bible.db: %v", err)
+	}
 
 }

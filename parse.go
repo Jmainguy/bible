@@ -23,8 +23,8 @@ func getVerseID(book int, chapterVerse string, db *sql.DB, minmax string, versio
 		verseID = verseIDInside
 		//  Just a chaper, 3
 	} else if len(chapterVerseArray) == 1 {
-		// Return max verse for this chapter
-		if minmax == "max" {
+		switch minmax {
+		case "max":
 			query := fmt.Sprintf("select id from %s where b is %d and c is %d;", version, book, chapter)
 			rows, err := db.Query(query)
 			if err != nil {
@@ -39,16 +39,15 @@ func getVerseID(book int, chapterVerse string, db *sql.DB, minmax string, versio
 				}
 				verseID = verse.ID
 			}
-		} else if minmax == "min" {
+		case "min":
 			verseIDString = fmt.Sprintf("%02d%03d001", book, chapter)
 			verseIDInside, err := strconv.Atoi(verseIDString)
 			if err != nil {
 				return 0, err
 			}
 			verseID = verseIDInside
-		} else {
-			err := fmt.Errorf("minmax must be set to min or max, was set to %s", minmax)
-			return 0, err
+		default:
+			return 0, fmt.Errorf("minmax must be set to min or max, was set to %s", minmax)
 		}
 	}
 

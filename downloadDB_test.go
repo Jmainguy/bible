@@ -58,6 +58,10 @@ func Test_downloadDB(t *testing.T) {
 		})
 	}
 	// Clean up
-	os.Remove("/tmp/bible.db/bible.db")
-	os.Remove("/tmp/bible.db")
+	if err := os.Remove("/tmp/bible.db/bible.db"); err != nil {
+		t.Fatalf("failed to remove /tmp/bible.db/bible.db: %v", err)
+	}
+	if err := os.Remove("/tmp/bible.db"); err != nil {
+		t.Fatalf("failed to remove /tmp/bible.db: %v", err)
+	}
 }

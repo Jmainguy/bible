@@ -39,14 +39,22 @@ func downloadDB(file string) (retErr error) {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	// Create the file
 	out, err := os.Create(file)
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	defer func() {
+		if err := out.Close(); err != nil {
+			fmt.Printf("error closing output file: %v\n", err)
+		}
+	}()
 
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)

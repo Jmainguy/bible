@@ -19,14 +19,18 @@ func TestSetup(t *testing.T) {
 
 func TestSetupNoHome(t *testing.T) {
 	home := os.Getenv("HOME")
-	os.Setenv("HOME", "")
+	if err := os.Setenv("HOME", ""); err != nil {
+		t.Fatalf("failed to set HOME: %v", err)
+	}
 
 	setUpTest()
 
 	_, err := setup()
 	assert.Equal(t, err, fmt.Errorf("$HOME is not defined"))
 	tearDownTest()
-	os.Setenv("HOME", home)
+	if err := os.Setenv("HOME", home); err != nil {
+		t.Fatalf("failed to set HOME: %v", err)
+	}
 
 }
 
@@ -39,7 +43,9 @@ func TestSetupNoDB(t *testing.T) {
 	_, err := setup()
 	assert.Equal(t, err, nil)
 	tearDownTest()
-	os.Remove("/tmp/bible.db")
+	if err := os.Remove("/tmp/bible.db"); err != nil {
+		t.Fatalf("failed to remove /tmp/bible.db: %v", err)
+	}
 }
 
 func TestSetupBadDB(t *testing.T) {
