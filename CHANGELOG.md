@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/Jmainguy/bible/compare/v1.0.0...v1.0.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([09d684d](https://github.com/Jmainguy/bible/commit/09d684d090f015ab594c3e923f2797fb575d8984))
+* **deps:** update all non-major dependencies ([190399d](https://github.com/Jmainguy/bible/commit/190399df27c6d6994400d0c3463d4e18573a2b61))
+
 ## [1.0.0](https://github.com/Jmainguy/bible/compare/v0.3.3...v1.0.0) (2025-08-28)
 
 
