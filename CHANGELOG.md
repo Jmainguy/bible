@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2](https://github.com/Jmainguy/bible/compare/v1.0.1...v1.0.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([fbc0b87](https://github.com/Jmainguy/bible/commit/fbc0b879f0c758cffac9a1bb874499246f6b2689))
+* **deps:** update all non-major dependencies ([1c5b2c6](https://github.com/Jmainguy/bible/commit/1c5b2c6b996f11a6c78d36cbcd8e32c4cb0cb36f))
+* **deps:** update module modernc.org/sqlite to v1.40.1 ([87cc486](https://github.com/Jmainguy/bible/commit/87cc4865f51471c6e9a990402d68dc648afc4c1c))
+* **deps:** update module modernc.org/sqlite to v1.40.1 ([def6722](https://github.com/Jmainguy/bible/commit/def6722fef94ba804fa4ab4dda65610712f3f5d7))
+
 ## [1.0.1](https://github.com/Jmainguy/bible/compare/v1.0.0...v1.0.1) (2025-11-10)
 
 
