@@ -37,18 +37,21 @@ archives:
 - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
   - goos: windows
-    format: zip
+    formats:
+      - zip
   files:
     - LICENSE
     - README.md
     - database/bible.db
 
 nfpms:
-- file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-  homepage:  https://github.com/Jmainguy/bible
-  description: A command line bible
+- id: packages
+  package_name: bible
+  file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  homepage: https://github.com/Jmainguy/bible
+  description: Search and read the Bible from the command line
   maintainer: Jonathan Seth Mainguy <jon@soh.re>
-  license: GPLv2
+  license: GPL-2.0-only
   vendor: Jmainguy
   release: 1
   overrides:
