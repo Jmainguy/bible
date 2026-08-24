@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/Jmainguy/bible/compare/v1.0.2...v1.0.3) (2026-08-24)
+
+
+### Bug Fixes
+
+* **deps:** update vulnerable Go modules ([21b209e](https://github.com/Jmainguy/bible/commit/21b209e6b8ec64ac472bd968cac06461327937ed))
+* refresh secure release artifacts ([890f1d9](https://github.com/Jmainguy/bible/commit/890f1d9911e9c5cb4ee6ebd5730f20128fa9a517))
+
 ## [1.0.2](https://github.com/Jmainguy/bible/compare/v1.0.1...v1.0.2) (2026-03-30)
 
 
