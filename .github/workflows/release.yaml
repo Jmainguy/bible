@@ -11,6 +11,6 @@ permissions:
 
 jobs:
   release-please:
-    uses: Jmainguy/golang-workflows/.github/workflows/golang-release.yml@v1
+    uses: Jmainguy/golang-workflows/.github/workflows/golang-release.yml@v2
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
